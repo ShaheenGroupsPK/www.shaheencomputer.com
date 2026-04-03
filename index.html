@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="ur" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shaheen Computer Center | Official</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root { --primary: #0f172a; --accent: #1d9bf0; --bg: #f1f5f9; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; }
+
+        /* ہیڈر */
+        .navbar { background: var(--primary); color: white; padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; }
+        .admin-login-btn { cursor: pointer; opacity: 0.7; font-size: 0.8rem; }
+
+        /* مین فیڈ */
+        .container { max-width: 600px; margin: 20px auto; padding: 0 15px; }
+        .post-card { background: white; border-radius: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); overflow: hidden; margin-bottom: 25px; border: 1px solid #e2e8f0; }
+        .post-header { padding: 12px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid #f1f5f9; }
+        .avatar { width: 45px; height: 45px; border-radius: 50%; object-fit: cover; border: 2px solid var(--accent); }
+        .post-img { width: 100%; max-height: 400px; object-fit: cover; display: block; }
+        .post-content { padding: 15px; text-align: right; }
+        .post-title { font-size: 1.3rem; font-weight: bold; color: var(--primary); margin-bottom: 8px; }
+        .blue-tick { color: var(--accent); font-size: 0.9rem; }
+
+        /* لائیک سسٹم */
+        .post-actions { padding: 12px; border-top: 1px solid #f1f5f9; display: flex; gap: 20px; color: #64748b; }
+        .action-btn { cursor: pointer; transition: 0.2s; }
+        .action-btn:hover { color: var(--accent); }
+        .liked { color: #e11d48 !important; }
+
+        /* ایڈمن پینل (چھپا ہوا) */
+        #adminPanel { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 2000; overflow-y: auto; padding: 20px; box-sizing: border-box; }
+        .admin-form { max-width: 500px; margin: auto; direction: rtl; }
+        input, textarea { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 8px; }
+        .btn { background: var(--primary); color: white; border: none; padding: 15px; width: 100%; border-radius: 8px; cursor: pointer; font-weight: bold; }
+        .close-admin { float: left; font-size: 1.5rem; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+<nav class="navbar">
+    <div style="font-weight: bold;">Shaheen <span style="color: var(--accent);">Center</span></div>
+    <div class="admin-login-btn" onclick="openAdmin()">🔐 ایڈمن لاگ ان</div>
+</nav>
+
+<div class="container" id="feedContainer">
+    <div class="post-card" id="defaultPost">
+        <div class="post-header">
+            <img src="https://via.placeholder.com/45" class="avatar" id="displayAvatar">
+            <div>
+                <strong>رانا اکبر شاہین <i class="fas fa-check-circle blue-tick"></i></strong><br>
+                <small id="postDate">ابھی ابھی</small>
+            </div>
+        </div>
+        <img src="https://via.placeholder.com/600x350" class="post-img" id="displayPostImg">
+        <div class="post-content">
+            <div class="post-title" id="displayTitle">خوش آمدید!</div>
+            <p id="displayDesc">شاہین کمپیوٹر سینٹر کی آفیشل ویب سائٹ پر خوش آمدید۔ نئی اپڈیٹس کے لیے نیچے لائیک کریں!</p>
+        </div>
+        <div class="post-actions">
+            <div class="action-btn" onclick="this.classList.toggle('liked')"><i class="fas fa-heart"></i> لائیک</div>
+            <div class="action-btn"><i class="fas fa-share"></i> شیئر</div>
+        </div>
+    </div>
+</div>
+
+<div id="adminPanel">
+    <span class="close-admin" onclick="closeAdmin()">&times;</span>
+    <div class="admin-form">
+        <h2 style="text-align: center;">ایڈمن کنٹرول سینٹر</h2>
+        
+        <label>پروفائل تصویر بدلیں:</label>
+        <input type="file" id="inputAvatar" accept="image/*">
+        
+        <label>پوسٹ کا عنوان:</label>
+        <input type="text" id="inputTitle" placeholder="عنوان لکھیں...">
+        
+        <label>پوسٹ کی تفصیل:</label>
+        <textarea id="inputDesc" rows="4" placeholder="تفصیل لکھیں..."></textarea>
+        
+        <label>پوسٹ کی تصویر اپلوڈ کریں:</label>
+        <input type="file" id="inputPostImg" accept="image/*">
+        
+        <button class="btn" onclick="updateWebsite()">ویب سائٹ اپڈیٹ کریں 🚀</button>
+    </div>
+</div>
+
+<script>
+    // ایڈمن پینل کھولنے کا فنکشن
+    function openAdmin() {
+        let pass = prompt("ایڈمن پاس ورڈ درج کریں:");
+        if (pass === "shaheen786") { // آپ اپنا پاس ورڈ یہاں بدل سکتے ہیں
+            document.getElementById('adminPanel').style.display = 'block';
+        } else {
+            alert("غلط پاس ورڈ!");
+        }
+    }
+
+    function closeAdmin() {
+        document.getElementById('adminPanel').style.display = 'none';
+    }
+
+    // ڈیٹا کو ویب سائٹ پر لائیو کرنے کا فنکشن
+    function updateWebsite() {
+        const title = document.getElementById('inputTitle').value;
+        const desc = document.getElementById('inputDesc').value;
+        const avatarFile = document.getElementById('inputAvatar').files[0];
+        const postImgFile = document.getElementById('inputPostImg').files[0];
+
+        if (!title || !postImgFile) {
+            alert("براہ کرم عنوان اور تصویر لازمی ڈالیں!");
+            return;
+        }
+
+        // تصویروں کو پروسیس کرنا
+        const reader = new FileReader();
+        const reader2 = new FileReader();
+
+        reader.onload = function(e) {
+            document.getElementById('displayPostImg').src = e.target.result;
+            document.getElementById('displayTitle').innerText = title;
+            document.getElementById('displayDesc').innerText = desc;
+            document.getElementById('postDate').innerText = new Date().toLocaleString('ur-PK');
+            
+            // ڈیٹا محفوظ کرنا (تاکہ ریفریش پر غائب نہ ہو)
+            localStorage.setItem('shaheen_title', title);
+            localStorage.setItem('shaheen_desc', desc);
+            localStorage.setItem('shaheen_img', e.target.result);
+        }
+        reader.readAsDataURL(postImgFile);
+
+        if (avatarFile) {
+            reader2.onload = function(e) {
+                document.getElementById('displayAvatar').src = e.target.result;
+                localStorage.setItem('shaheen_avatar', e.target.result);
+            }
+            reader2.readAsDataURL(avatarFile);
+        }
+
+        alert("مبارک ہو! ویب سائٹ اپڈیٹ ہوگئی۔");
+        closeAdmin();
+    }
+
+    // پیج لوڈ ہوتے ہی پرانا ڈیٹا دکھانا
+    window.onload = function() {
+        if (localStorage.getItem('shaheen_title')) {
+            document.getElementById('displayTitle').innerText = localStorage.getItem('shaheen_title');
+            document.getElementById('displayDesc').innerText = localStorage.getItem('shaheen_desc');
+            document.getElementById('displayPostImg').src = localStorage.getItem('shaheen_img');
+            if (localStorage.getItem('shaheen_avatar')) {
+                document.getElementById('displayAvatar').src = localStorage.getItem('shaheen_avatar');
+            }
+        }
+    }
+</script>
+
+</body>
+</html>
